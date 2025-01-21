@@ -1,23 +1,22 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { Todo } from '../../types/Todo';
 import { TodoItem } from '../TodoItem/TodoItem';
 
 interface TodoListProps {
-  todoList: Todo[];
+  todos: Todo[];
   tempTodo: Todo | null;
   loadingTodos: number[];
   handleDeleteTodo: (todoId: number) => Promise<void>;
 }
 
 export const TodoList: React.FC<TodoListProps> = ({
-  todoList,
+  todos,
   tempTodo,
   loadingTodos,
   handleDeleteTodo,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {todoList?.map(todo => {
+      {todos?.map(todo => {
         const isActiveModal = loadingTodos.some(id => id === todo.id);
 
         return (

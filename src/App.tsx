@@ -9,7 +9,7 @@ import * as postService from './api/todos';
 import { FilterType } from './types/FilterType';
 
 export const App: React.FC = () => {
-  const [todoList, setTodoList] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [todosType, setTodosType] = useState<FilterType>(FilterType.ALL);
   const [isError, setIsError] = useState('');
   const [loadingTodos, setLoadingTodos] = useState<number[]>([]);
@@ -32,21 +32,19 @@ export const App: React.FC = () => {
   useEffect(() => {
     postService
       .getTodos()
-      .then(todos => {
-        setTodoList(todos);
-      })
+      .then(setTodos)
       .catch(() => {
         handleSetError('Unable to load todos');
         new Error('Unable to load todos');
       });
   }, []);
 
-  const visibleTodos = todoList.filter(todo => {
-    if (todosType === 'active') {
+  const visibleTodos = todos.filter(todo => {
+    if (todosType === FilterType.ACTIVE) {
       return !todo.completed;
     }
 
-    if (todosType === 'completed') {
+    if (todosType === FilterType.COMPLETED) {
       return todo.completed;
     }
 
@@ -69,7 +67,7 @@ export const App: React.FC = () => {
     return postService
       .addTodo(title, false)
       .then(newTodo => {
-        setTodoList(currentList => [...currentList, newTodo]);
+        setTodos(currentList => [...currentList, newTodo]);
       })
       .catch(() => {
         handleSetError('Unable to add a todo');
@@ -84,7 +82,7 @@ export const App: React.FC = () => {
     return postService
       .deleteTodo(todoId)
       .then(() => {
-        setTodoList(currentList =>
+        setTodos(currentList =>
           currentList?.filter(todo => todo.id !== todoId),
         );
       })
@@ -127,17 +125,17 @@ export const App: React.FC = () => {
       <h1 className="todoapp__title">todos</h1>
 
       <div className="todoapp__content">
-        <Header handleAddTodo={handleAddTodo} todoList={todoList} />
+        <Header handleAddTodo={handleAddTodo} todos={todos} />
 
         <TodoList
-          todoList={visibleTodos}
+          todos={visibleTodos}
           tempTodo={tempTodo}
           loadingTodos={loadingTodos}
           handleDeleteTodo={handleDeleteTodo}
         />
 
         <Footer
-          todoList={todoList}
+          todos={todos}
           todosType={todosType}
           handleTodosTypeChange={handleTodosTypeChange}
           handleDeleteTodo={handleDeleteTodo}

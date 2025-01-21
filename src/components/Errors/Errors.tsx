@@ -1,5 +1,3 @@
-/* DON'T use conditional rendering to hide the notification */
-/* Add the 'hidden' class to hide the message smoothly */
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 

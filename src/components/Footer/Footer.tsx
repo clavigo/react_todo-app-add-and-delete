@@ -1,29 +1,17 @@
-/* Hide the footer if there are no todos */
-
 import classNames from 'classnames';
 import { Todo } from '../../types/Todo';
 import { useEffect, useState } from 'react';
 import { FilterType } from '../../types/FilterType';
 
-const filterItems = [
-  { type: FilterType.ALL, label: 'All', dataCy: 'FilterLinkAll' },
-  { type: FilterType.ACTIVE, label: 'Active', dataCy: 'FilterLinkActive' },
-  {
-    type: FilterType.COMPLETED,
-    label: 'Completed',
-    dataCy: 'FilterLinkCompleted',
-  },
-];
-
 interface FooterProps {
-  todoList: Todo[];
+  todos: Todo[];
   todosType: FilterType;
   handleTodosTypeChange: (todosType: FilterType) => void;
   handleDeleteTodo: (todoId: number) => Promise<void>;
 }
 
 export const Footer: React.FC<FooterProps> = ({
-  todoList,
+  todos,
   todosType = FilterType.ALL,
   handleTodosTypeChange,
   handleDeleteTodo,
@@ -32,9 +20,9 @@ export const Footer: React.FC<FooterProps> = ({
   const [completed, setCompleted] = useState<Todo[]>([]);
 
   useEffect(() => {
-    setActive(todoList.filter(todo => !todo.completed).length);
-    setCompleted(todoList.filter(todo => todo.completed));
-  }, [todoList]);
+    setActive(todos.filter(todo => !todo.completed).length);
+    setCompleted(todos.filter(todo => todo.completed));
+  }, [todos]);
 
   const handleDeleteButton = () => {
     completed.map(todo => {
@@ -43,30 +31,28 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    todoList.length > 0 && (
+    todos.length > 0 && (
       <footer className="todoapp__footer" data-cy="Footer">
         <span className="todo-count" data-cy="TodosCounter">
           {active} items left
         </span>
 
-        {/* Active link should have the 'selected' class */}
         <nav className="filter" data-cy="Filter">
-          {filterItems.map(({ type, label, dataCy }) => (
+          {Object.values(FilterType).map(filter => (
             <a
-              key={type}
+              key={filter}
               href="#/"
               className={classNames('filter__link', {
-                selected: todosType === type,
+                selected: todosType === filter,
               })}
-              data-cy={dataCy}
-              onClick={() => handleTodosTypeChange(type)}
+              data-cy={`FilterLink${filter}`}
+              onClick={() => handleTodosTypeChange(filter)}
             >
-              {label}
+              {filter}
             </a>
           ))}
         </nav>
 
-        {/* this button should be disabled if there are no completed todos */}
         <button
           type="button"
           className="todoapp__clear-completed"
