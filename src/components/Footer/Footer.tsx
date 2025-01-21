@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import { Todo } from '../../types/Todo';
-import { useEffect, useState } from 'react';
 import { FilterType } from '../../types/FilterType';
 
 interface FooterProps {
@@ -16,13 +15,8 @@ export const Footer: React.FC<FooterProps> = ({
   handleTodosTypeChange,
   handleDeleteTodo,
 }) => {
-  const [active, setActive] = useState(0);
-  const [completed, setCompleted] = useState<Todo[]>([]);
-
-  useEffect(() => {
-    setActive(todos.filter(todo => !todo.completed).length);
-    setCompleted(todos.filter(todo => todo.completed));
-  }, [todos]);
+  const active = todos.filter(todo => !todo.completed).length;
+  const completed = todos.filter(todo => todo.completed);
 
   const handleDeleteButton = () => {
     completed.map(todo => {
